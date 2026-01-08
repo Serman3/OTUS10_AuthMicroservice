@@ -1,0 +1,24 @@
+spring:
+  docker:
+    compose:
+      stop:
+        command: down
+  sql:
+    init:
+      mode: always
+jwt:
+  access-token-key: '{"kty":"oct","k":"hi7S5RX5ZRZooHA0RKGctZ-KtR9FoESgCnH-3BNg5XI"}'
+  refresh-token-key: '{"kty":"oct","k":"956PBFst1FguLr5irJD-aQ"}'
+server:
+  port: 8443
+
+logging:
+  level:
+    sql: debug
+    org.springframework.security: trace
+    org.springframework.jdbc.core: trace
+
+datasource:
+  url: jdbc:postgresql://localhost:5432/auth_db
+  username: auth
+  password: auth
