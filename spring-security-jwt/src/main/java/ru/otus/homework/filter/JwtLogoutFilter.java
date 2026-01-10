@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -15,9 +14,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.otus.homework.TokenUser;
+import ru.otus.homework.datasource.dao.UserAuthDao;
 
 import java.io.IOException;
-import java.util.Date;
 
 public class JwtLogoutFilter extends OncePerRequestFilter {
 
@@ -25,7 +24,11 @@ public class JwtLogoutFilter extends OncePerRequestFilter {
 
     private SecurityContextRepository securityContextRepository = new RequestAttributeSecurityContextRepository();
 
-    private final JdbcTemplate jdbcTemplate;
+    private final UserAuthDao userAuthDao;
+
+    public JwtLogoutFilter(UserAuthDao userAuthDao) {
+        this.userAuthDao = userAuthDao;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -37,9 +40,7 @@ public class JwtLogoutFilter extends OncePerRequestFilter {
                         context.getAuthentication().getPrincipal() instanceof TokenUser user &&
                         context.getAuthentication().getAuthorities()
                                 .contains(new SimpleGrantedAuthority("JWT_LOGOUT"))) {
-                    this.jdbcTemplate.update("insert into t_deactivated_token (id, c_keep_until) values (?, ?)",
-                            user.getToken().id(), Date.from(user.getToken().expiresAt()));
-
+                    userAuthDao.addDeactivateToken(user);
                     response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                     return;
                 }
@@ -49,10 +50,6 @@ public class JwtLogoutFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    public JwtLogoutFilter(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
     }
 
     public void setRequestMatcher(RequestMatcher requestMatcher) {

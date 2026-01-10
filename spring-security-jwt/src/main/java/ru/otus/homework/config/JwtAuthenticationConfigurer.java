@@ -1,7 +1,6 @@
 package ru.otus.homework.config;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -13,6 +12,7 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.otus.homework.Token;
 import ru.otus.homework.TokenAuthenticationUserDetailsService;
+import ru.otus.homework.datasource.dao.UserAuthDao;
 import ru.otus.homework.filter.JwtLogoutFilter;
 import ru.otus.homework.filter.RefreshTokenFilter;
 import ru.otus.homework.filter.RequestJwtTokensFilter;
@@ -29,7 +29,7 @@ public class JwtAuthenticationConfigurer extends AbstractHttpConfigurer<JwtAuthe
 
     private Function<String, Token> refreshTokenStringDeserializer;
 
-    private JdbcTemplate jdbcTemplate;
+    private UserAuthDao userAuthDao;
 
     @Override
     public void init(HttpSecurity builder) throws Exception {
@@ -54,12 +54,12 @@ public class JwtAuthenticationConfigurer extends AbstractHttpConfigurer<JwtAuthe
 
         var authenticationProvider = new PreAuthenticatedAuthenticationProvider();
         authenticationProvider.setPreAuthenticatedUserDetailsService(
-                new TokenAuthenticationUserDetailsService(this.jdbcTemplate));
+                new TokenAuthenticationUserDetailsService(this.userAuthDao));
 
         var refreshTokenFilter = new RefreshTokenFilter();
         refreshTokenFilter.setAccessTokenStringSerializer(this.accessTokenStringSerializer);
 
-        var jwtLogoutFilter = new JwtLogoutFilter(this.jdbcTemplate);
+        var jwtLogoutFilter = new JwtLogoutFilter(this.userAuthDao);
 
         builder.addFilterAfter(requestJwtTokensFilter, ExceptionTranslationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, CsrfFilter.class)
@@ -92,8 +92,8 @@ public class JwtAuthenticationConfigurer extends AbstractHttpConfigurer<JwtAuthe
         return this;
     }
 
-    public JwtAuthenticationConfigurer jdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public JwtAuthenticationConfigurer userAuthDao(UserAuthDao userAuthDao) {
+        this.userAuthDao = userAuthDao;
         return this;
     }
 

@@ -1,15 +1,16 @@
 create table t_user
 (
-    id         int primary key,
-    c_username varchar not null unique,
-    c_password varchar not null
+    id       serial primary key,
+    username varchar not null unique,
+    password varchar not null
 );
 
 create table t_user_authority
 (
     id          serial primary key,
     id_user     int     not null references t_user (id),
-    c_authority varchar not null
+    c_authority varchar not null,
+    unique (id_user, c_authority)
 );
 
 create table t_deactivated_token
@@ -18,8 +19,6 @@ create table t_deactivated_token
     c_keep_until timestamp not null check ( c_keep_until > now() )
 );
 
-insert into t_user(id, c_username, c_password)
-values (1, 'j.jameson', '{noop}password');
+insert into t_user(username, password) values ('j.jameson', '{noop}password');
 
-insert into t_user_authority(id_user, c_authority)
-values (1, 'ROLE_MANAGER');
+insert into t_user_authority(id_user, c_authority) values (1, 'ROLE_MANAGER');

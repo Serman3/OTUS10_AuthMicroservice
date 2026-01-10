@@ -1,24 +1,35 @@
-spring:
-  docker:
-    compose:
-      stop:
-        command: down
-  sql:
-    init:
-      mode: always
-jwt:
-  access-token-key: '{"kty":"oct","k":"hi7S5RX5ZRZooHA0RKGctZ-KtR9FoESgCnH-3BNg5XI"}'
-  refresh-token-key: '{"kty":"oct","k":"956PBFst1FguLr5irJD-aQ"}'
 server:
   port: 8443
+
+base:
+  url: http://localhost:8443
 
 logging:
   level:
     sql: debug
     org.springframework.security: trace
     org.springframework.jdbc.core: trace
+    ru.otus.homework.api.client.JwtClient: debug
 
-datasource:
-  url: jdbc:postgresql://localhost:5432/auth_db
-  username: auth
-  password: auth
+jwt:
+  access-token-key: '{"kty":"oct","k":"hi7S5RX5ZRZooHA0RKGctZ-KtR9FoESgCnH-3BNg5XI"}'
+  refresh-token-key: '{"kty":"oct","k":"956PBFst1FguLr5irJD-aQ"}'
+
+spring:
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+      client:
+        config:
+          JwtClient:
+            connect-timeout: 30000
+            readTimeout: 30000
+            logger-level: full
+
+resilience4j:
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 30000ms
+        cancel-running-future: true

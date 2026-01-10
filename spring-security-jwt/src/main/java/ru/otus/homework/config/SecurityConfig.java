@@ -6,17 +6,20 @@ import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import ru.otus.homework.datasource.dao.UserAuthDao;
 import ru.otus.homework.token.access.AccessTokenJwsStringDeserializer;
 import ru.otus.homework.token.access.AccessTokenJwsStringSerializer;
 import ru.otus.homework.token.refresh.RefreshTokenJweStringDeserializer;
@@ -25,6 +28,13 @@ import java.text.ParseException;
 
 @Configuration
 public class SecurityConfig {
+
+    private final UserAuthDao userAuthDao;
+
+    @Autowired
+    public SecurityConfig(UserAuthDao userAuthDao) {
+        this.userAuthDao = userAuthDao;
+    }
 
     @Bean
     public JwtAuthenticationConfigurer jwtAuthenticationConfigurer(
@@ -45,7 +55,7 @@ public class SecurityConfig {
                 .refreshTokenStringDeserializer(new RefreshTokenJweStringDeserializer(
                         new DirectDecrypter(OctetSequenceKey.parse(refreshTokenKey))
                 ))
-                .jdbcTemplate(jdbcTemplate);
+                .userAuthDao(userAuthDao);
     }
 
     @Bean
@@ -54,29 +64,34 @@ public class SecurityConfig {
         http.with(jwtAuthenticationConfigurer, Customizer.withDefaults());
 
         return http
+                .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
-                                .requestMatchers("/manager.html").hasRole("MANAGER")
-                                .requestMatchers("/error").permitAll()
-                                .anyRequest().authenticated())
+                                .requestMatchers("/auth/**", "/jwt/**").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
+                                .anyRequest().hasAnyRole("USER", "MANAGER"))
                 .build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate) {
-        return username -> jdbcTemplate.query("select * from t_user where c_username = ?",
-                (rs, i) -> User.builder()
-                        .username(rs.getString("c_username"))
-                        .password(rs.getString("c_password"))
-                        .authorities(
-                                jdbcTemplate.query("select c_authority from t_user_authority where id_user = ?",
-                                        (rs1, i1) ->
-                                                new SimpleGrantedAuthority(rs1.getString("c_authority")),
-                                        rs.getInt("id")))
-                        .build(), username).stream().findFirst().orElse(null);
+    public UserDetailsService userDetailsService() {
+        return username -> userAuthDao.findUserByUsername(username)
+                .map(userDto -> {
+                    return User.builder()
+                            .username(userDto.getUsername())
+                            .password(userDto.getPassword())
+                            .authorities(userAuthDao.findAllUserRolesByUserId(userDto.getId())
+                                    .stream()
+                                    .map(SimpleGrantedAuthority::new)
+                                    .toList()
+                            ).build();
+                })
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
 }
