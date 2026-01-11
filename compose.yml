@@ -10,3 +10,21 @@ services:
     ports:
       - "5432:5432"
     container_name: auth_test_db
+    networks:
+      - app-network
+
+  auth:
+    build: ./spring-security-jwt
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/auth_db
+    ports:
+      - "8443:8443"
+    container_name: auth_service
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+networks:
+  app-network:
+    driver: bridge

@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>spring-security-jwt</artifactId>
+    <artifactId>game-service</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -31,7 +31,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.otus.homework.AuthServiceApplication</mainClass>
+                    <mainClass>ru.otus.homework.GameServiceApplication</mainClass>
                     <layout>JAR</layout>
                     <excludes>
                         <exclude>

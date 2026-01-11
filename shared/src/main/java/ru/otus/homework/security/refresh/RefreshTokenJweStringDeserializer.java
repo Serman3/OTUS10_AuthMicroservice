@@ -1,11 +1,11 @@
-package ru.otus.homework.token.refresh;
+package ru.otus.homework.security.refresh;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEDecrypter;
 import com.nimbusds.jwt.EncryptedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.homework.Token;
+import ru.otus.homework.security.token.Token;
 
 import java.text.ParseException;
 import java.util.UUID;
@@ -27,7 +27,10 @@ public class RefreshTokenJweStringDeserializer implements Function<String, Token
             var encryptedJWT = EncryptedJWT.parse(string);
             encryptedJWT.decrypt(this.jweDecrypter);
             var claimsSet = encryptedJWT.getJWTClaimsSet();
-            return new Token(UUID.fromString(claimsSet.getJWTID()), claimsSet.getSubject(),
+            return new Token(
+                    UUID.fromString(claimsSet.getJWTID()),
+                    claimsSet.getSubject(),
+                    claimsSet.getStringClaim("gameId"),
                     claimsSet.getStringListClaim("authorities"),
                     claimsSet.getIssueTime().toInstant(),
                     claimsSet.getExpirationTime().toInstant());

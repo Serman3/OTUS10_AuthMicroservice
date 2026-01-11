@@ -5,7 +5,7 @@ import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.homework.Token;
+import ru.otus.homework.security.token.Token;
 
 import java.util.Date;
 import java.util.function.Function;
@@ -39,6 +39,7 @@ public class RefreshTokenJweStringSerializer implements Function<Token, String> 
                 new JWTClaimsSet.Builder()
                         .jwtID(token.id().toString())
                         .subject(token.subject())
+                        .claim("gameId", token.gameId())
                         .issueTime(Date.from(token.createdAt()))
                         .expirationTime(Date.from(token.expiresAt()))
                         .claim("authorities", token.authorities())

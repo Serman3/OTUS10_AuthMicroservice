@@ -15,16 +15,18 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.otus.homework.security.token.Token;
+import ru.otus.homework.datasource.dao.SpaceBattleDao;
 import ru.otus.homework.token.Tokens;
 import ru.otus.homework.token.access.DefaultAccessTokenFactory;
 import ru.otus.homework.token.refresh.DefaultRefreshTokenFactory;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class RequestJwtTokensFilter extends OncePerRequestFilter {
+public class RequestGameJwtTokensFilter extends OncePerRequestFilter {
 
     private RequestMatcher requestMatcher = new AntPathRequestMatcher("/jwt/tokens", HttpMethod.POST.name());
 
@@ -40,6 +42,8 @@ public class RequestJwtTokensFilter extends OncePerRequestFilter {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+    private SpaceBattleDao spaceBattleDao;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
@@ -47,21 +51,25 @@ public class RequestJwtTokensFilter extends OncePerRequestFilter {
             if (this.securityContextRepository.containsContext(request)) {
                 var context = this.securityContextRepository.loadDeferredContext(request).get();
                 if (context != null && !(context.getAuthentication() instanceof PreAuthenticatedAuthenticationToken)) {
-                    var refreshToken = this.refreshTokenFactory.apply(context.getAuthentication(), request);
-                    var accessToken = this.accessTokenFactory.apply(refreshToken);
+                    String gameId = request.getHeader("gameId");
+                    if (gameId != null && !gameId.isBlank() && spaceBattleDao.getUsersByGameId(UUID.fromString(gameId)).contains(context.getAuthentication().getName())) {
+                        var refreshToken = this.refreshTokenFactory.apply(context.getAuthentication(), request);
+                        var accessToken = this.accessTokenFactory.apply(refreshToken);
 
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    this.objectMapper.writeValue(response.getWriter(),
-                            new Tokens(this.accessTokenStringSerializer.apply(accessToken),
-                                    accessToken.expiresAt().toString(),
-                                    this.refreshTokenStringSerializer.apply(refreshToken),
-                                    refreshToken.expiresAt().toString()));
-                    return;
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                        this.objectMapper.writeValue(response.getWriter(),
+                                new Tokens(this.accessTokenStringSerializer.apply(accessToken),
+                                        accessToken.expiresAt().toString(),
+                                        this.refreshTokenStringSerializer.apply(refreshToken),
+                                        refreshToken.expiresAt().toString()));
+                        return;
+                    }
+                    filterChain.doFilter(request, response);
                 }
             }
 
-            throw new AccessDeniedException("User must be authenticated");
+            throw new AccessDeniedException("User must be authenticated and contains in spaceBattle game");
         }
 
         filterChain.doFilter(request, response);
@@ -93,6 +101,10 @@ public class RequestJwtTokensFilter extends OncePerRequestFilter {
 
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+    }
+
+    public void setSpaceBattleDao(SpaceBattleDao spaceBattleDao) {
+        this.spaceBattleDao = spaceBattleDao;
     }
 
 }

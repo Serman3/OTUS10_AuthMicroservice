@@ -13,7 +13,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.otus.homework.TokenUser;
+import ru.otus.homework.security.token.TokenUser;
 import ru.otus.homework.datasource.dao.UserAuthDao;
 
 import java.io.IOException;

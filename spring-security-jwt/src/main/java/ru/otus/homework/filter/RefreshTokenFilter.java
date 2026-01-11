@@ -15,8 +15,8 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.otus.homework.Token;
-import ru.otus.homework.TokenUser;
+import ru.otus.homework.security.token.Token;
+import ru.otus.homework.security.token.TokenUser;
 import ru.otus.homework.token.Tokens;
 import ru.otus.homework.token.access.DefaultAccessTokenFactory;
 

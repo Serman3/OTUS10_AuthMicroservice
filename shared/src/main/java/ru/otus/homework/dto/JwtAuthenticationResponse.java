@@ -1,9 +1,9 @@
-package ru.otus.homework.web.dto;
+package ru.otus.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Ответ c токеном доступа")
-public class JwtAuthenticationDto {
+public class JwtAuthenticationResponse {
 
     @Schema(description = "Токен доступа", example = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYyMjUwNj...")
     private String accessToken;
@@ -17,10 +17,10 @@ public class JwtAuthenticationDto {
     @Schema(description = "Дата завершения работы рефреш токен", example = "2026-01-09T12:10:17.412416Z")
     private String refreshTokenExpiry;
 
-    public JwtAuthenticationDto() {
+    public JwtAuthenticationResponse() {
     }
 
-    public JwtAuthenticationDto(String accessToken, String accessTokenExpiry, String refreshToken, String refreshTokenExpiry) {
+    public JwtAuthenticationResponse(String accessToken, String accessTokenExpiry, String refreshToken, String refreshTokenExpiry) {
         this.accessToken = accessToken;
         this.accessTokenExpiry = accessTokenExpiry;
         this.refreshToken = refreshToken;

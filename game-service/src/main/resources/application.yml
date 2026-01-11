@@ -1,0 +1,42 @@
+server:
+  port: 8444
+
+services:
+  auth:
+    url: http://localhost:8443
+  game:
+    url: http://localhost:8444
+
+logging:
+  level:
+    sql: debug
+    org.springframework.security: trace
+    ru.otus.homework.api.client.AuthServiceClient: debug
+    ru.otus.homework.api.client.GameServiceClient: debug
+
+jwt:
+  access-token-key: '{"kty":"oct","k":"hi7S5RX5ZRZooHA0RKGctZ-KtR9FoESgCnH-3BNg5XI"}'
+  refresh-token-key: '{"kty":"oct","k":"956PBFst1FguLr5irJD-aQ"}'
+
+spring:
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+      client:
+        config:
+          AuthServiceClient:
+            connect-timeout: 30000
+            readTimeout: 30000
+            logger-level: full
+          GameServiceClient:
+            connect-timeout: 30000
+            readTimeout: 30000
+            logger-level: full
+
+resilience4j:
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 30000ms
+        cancel-running-future: true

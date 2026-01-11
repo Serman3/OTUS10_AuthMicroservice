@@ -1,17 +1,17 @@
-package ru.otus.homework.web.dto;
+package ru.otus.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Запрос c токеном доступа")
-public class JwtAuthorizationDto {
+public class JwtTokenRequest {
 
     @Schema(description = "Токен доступа", example = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYyMjUwNj...")
     private String token;
 
-    public JwtAuthorizationDto() {
+    public JwtTokenRequest() {
     }
 
-    public JwtAuthorizationDto(String token) {
+    public JwtTokenRequest(String token) {
         this.token = token;
     }
 

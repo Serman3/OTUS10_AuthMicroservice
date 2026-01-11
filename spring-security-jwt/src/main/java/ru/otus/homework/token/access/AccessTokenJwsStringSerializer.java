@@ -8,7 +8,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.homework.Token;
+import ru.otus.homework.security.token.Token;
 
 import java.util.Date;
 import java.util.function.Function;
@@ -34,15 +34,16 @@ public class AccessTokenJwsStringSerializer implements Function<Token, String> {
     public String apply(Token token) {
         SignedJWT signedJWT = new SignedJWT(
                 new JWSHeader.Builder(this.jwsAlgorithm)
-                .keyID(token.id().toString())
-                .build(),
+                        .keyID(token.id().toString())
+                        .build(),
                 new JWTClaimsSet.Builder()
-                .jwtID(token.id().toString())
-                .subject(token.subject())
-                .issueTime(Date.from(token.createdAt()))
-                .expirationTime(Date.from(token.expiresAt()))
-                .claim("authorities", token.authorities())
-                .build()
+                        .jwtID(token.id().toString())
+                        .subject(token.subject())
+                        .claim("gameId", token.gameId())
+                        .issueTime(Date.from(token.createdAt()))
+                        .expirationTime(Date.from(token.expiresAt()))
+                        .claim("authorities", token.authorities())
+                        .build()
         );
         try {
             signedJWT.sign(this.jwsSigner);

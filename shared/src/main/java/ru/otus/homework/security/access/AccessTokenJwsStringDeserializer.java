@@ -1,11 +1,11 @@
-package ru.otus.homework.token.access;
+package ru.otus.homework.security.access;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jwt.SignedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.homework.Token;
+import ru.otus.homework.security.token.Token;
 
 import java.text.ParseException;
 import java.util.UUID;
@@ -27,7 +27,10 @@ public class AccessTokenJwsStringDeserializer implements Function<String, Token>
             var signedJWT = SignedJWT.parse(string);
             if (signedJWT.verify(this.jwsVerifier)) {
                 var claimsSet = signedJWT.getJWTClaimsSet();
-                return new Token(UUID.fromString(claimsSet.getJWTID()), claimsSet.getSubject(),
+                return new Token(
+                        UUID.fromString(claimsSet.getJWTID()),
+                        claimsSet.getSubject(),
+                        claimsSet.getStringClaim("gameId"),
                         claimsSet.getStringListClaim("authorities"),
                         claimsSet.getIssueTime().toInstant(),
                         claimsSet.getExpirationTime().toInstant());

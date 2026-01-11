@@ -8,7 +8,7 @@ import org.springframework.validation.Validator;
 import ru.otus.homework.datasource.dao.UserAuthDao;
 import ru.otus.homework.datasource.dto.UserDto;
 import ru.otus.homework.ex.UserNotCreatedException;
-import ru.otus.homework.web.dto.RegistrationDto;
+import ru.otus.homework.dto.RegistrationRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,12 +25,12 @@ public class UserRegistartionValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz.equals(RegistrationDto.class);
+        return clazz.equals(RegistrationRequest.class);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        RegistrationDto registrationDto = (RegistrationDto) target;
+        RegistrationRequest registrationRequest = (RegistrationRequest) target;
 
         if (errors.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder();
@@ -41,7 +41,7 @@ public class UserRegistartionValidator implements Validator {
             throw new UserNotCreatedException(errorMessage.toString());
         }
 
-        Optional<UserDto> userDtoOptional = userAuthDao.findUserByUsername(registrationDto.getUsername());
+        Optional<UserDto> userDtoOptional = userAuthDao.findUserByUsername(registrationRequest.getUsername());
         if (userDtoOptional.isPresent()) {
             throw new UserNotCreatedException("Такой пользователь уже существует");
         }

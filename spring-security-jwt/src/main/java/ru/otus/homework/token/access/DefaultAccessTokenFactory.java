@@ -1,6 +1,6 @@
 package ru.otus.homework.token.access;
 
-import ru.otus.homework.Token;
+import ru.otus.homework.security.token.Token;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -17,6 +17,7 @@ public class DefaultAccessTokenFactory implements Function<Token, Token> {
         return new Token(
                 token.id(),
                 token.subject(),
+                token.gameId(),
                 token.authorities().stream()
                         .filter(authority -> authority.startsWith("GRANT_"))
                         .map(authority -> authority.replace("GRANT_", ""))

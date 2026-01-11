@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Пользователь")
 public class UserController {
 
-    @Operation(summary = "Информация о пользователе")
+    @Operation(summary = "Информация об авторизованном пользователе")
     @GetMapping("/showUserInfo")
     public ResponseEntity<?> showUserInfo(@RequestHeader(value = "Authorization") String accessToken) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

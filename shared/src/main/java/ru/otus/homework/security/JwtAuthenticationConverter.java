@@ -1,11 +1,11 @@
-package ru.otus.homework.config;
+package ru.otus.homework.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import ru.otus.homework.Token;
+import ru.otus.homework.security.token.Token;
 
 import java.util.function.Function;
 

@@ -3,7 +3,7 @@ package ru.otus.homework.api.client;
 import feign.Response;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
-import ru.otus.homework.web.dto.JwtAuthenticationDto;
+import ru.otus.homework.dto.JwtAuthenticationResponse;
 
 @Component
 public class JwtFallbackFactory implements FallbackFactory<JwtClient> {
@@ -12,12 +12,12 @@ public class JwtFallbackFactory implements FallbackFactory<JwtClient> {
     public JwtClient create(Throwable cause) {
         return new JwtClient() {
             @Override
-            public JwtAuthenticationDto performToken(String basic) {
+            public JwtAuthenticationResponse performToken(String basic, String gameId) {
                 return null;
             }
 
             @Override
-            public JwtAuthenticationDto refreshToken(String refreshToken) {
+            public JwtAuthenticationResponse refreshToken(String refreshToken) {
                 return null;
             }
 

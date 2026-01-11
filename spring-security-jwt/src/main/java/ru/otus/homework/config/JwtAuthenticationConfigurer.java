@@ -10,11 +10,14 @@ import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import ru.otus.homework.Token;
-import ru.otus.homework.TokenAuthenticationUserDetailsService;
+import ru.otus.homework.security.JwtAuthenticationConverter;
+import ru.otus.homework.security.token.Token;
+import ru.otus.homework.security.TokenAuthenticationUserDetailsService;
+import ru.otus.homework.datasource.dao.SpaceBattleDao;
 import ru.otus.homework.datasource.dao.UserAuthDao;
 import ru.otus.homework.filter.JwtLogoutFilter;
 import ru.otus.homework.filter.RefreshTokenFilter;
+import ru.otus.homework.filter.RequestGameJwtTokensFilter;
 import ru.otus.homework.filter.RequestJwtTokensFilter;
 
 import java.util.function.Function;
@@ -31,6 +34,8 @@ public class JwtAuthenticationConfigurer extends AbstractHttpConfigurer<JwtAuthe
 
     private UserAuthDao userAuthDao;
 
+    private SpaceBattleDao spaceBattleDao;
+
     @Override
     public void init(HttpSecurity builder) throws Exception {
         var csrfConfigurer = builder.getConfigurer(CsrfConfigurer.class);
@@ -41,6 +46,11 @@ public class JwtAuthenticationConfigurer extends AbstractHttpConfigurer<JwtAuthe
 
     @Override
     public void configure(HttpSecurity builder) throws Exception {
+        var requestGameJwtTokensFilter = new RequestGameJwtTokensFilter();
+        requestGameJwtTokensFilter.setAccessTokenStringSerializer(this.accessTokenStringSerializer);
+        requestGameJwtTokensFilter.setRefreshTokenStringSerializer(this.refreshTokenStringSerializer);
+        requestGameJwtTokensFilter.setSpaceBattleDao(spaceBattleDao);
+
         var requestJwtTokensFilter = new RequestJwtTokensFilter();
         requestJwtTokensFilter.setAccessTokenStringSerializer(this.accessTokenStringSerializer);
         requestJwtTokensFilter.setRefreshTokenStringSerializer(this.refreshTokenStringSerializer);
@@ -61,7 +71,9 @@ public class JwtAuthenticationConfigurer extends AbstractHttpConfigurer<JwtAuthe
 
         var jwtLogoutFilter = new JwtLogoutFilter(this.userAuthDao);
 
-        builder.addFilterAfter(requestJwtTokensFilter, ExceptionTranslationFilter.class)
+        builder
+                .addFilterAfter(requestJwtTokensFilter, ExceptionTranslationFilter.class)
+                .addFilterBefore(requestGameJwtTokensFilter, RequestJwtTokensFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, CsrfFilter.class)
                 .addFilterAfter(refreshTokenFilter, ExceptionTranslationFilter.class)
                 .addFilterAfter(jwtLogoutFilter, ExceptionTranslationFilter.class)
@@ -97,5 +109,9 @@ public class JwtAuthenticationConfigurer extends AbstractHttpConfigurer<JwtAuthe
         return this;
     }
 
+    public JwtAuthenticationConfigurer spaceBattleDao(SpaceBattleDao spaceBattleDao) {
+        this.spaceBattleDao = spaceBattleDao;
+        return this;
+    }
 }
 
