@@ -2,11 +2,13 @@ package ru.otus.homework.api.client;
 
 import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import ru.otus.homework.dto.*;
 
-@FeignClient(qualifiers = "AuthClient", name = "auth-service", configuration = ClientConfig.class, fallbackFactory = AuthFallbackFactory.class)
+@Profile("test")
+@FeignClient(qualifiers = "AuthClient", name = "AuthClient",  url = "${services.auth-service.url}", configuration = ClientConfig.class, fallbackFactory = AuthFallbackFactory.class)
 public interface AuthServiceClient {
 
     @PostMapping("/auth/authorize")

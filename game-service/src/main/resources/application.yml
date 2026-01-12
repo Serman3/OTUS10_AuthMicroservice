@@ -1,19 +1,32 @@
+spring:
+  profiles:
+    active: prod
+  application:
+    name: game-service
+
 server:
   port: 8444
 
 logging:
   level:
     org.springframework.security: trace
-    ru.otus.homework.api.client.AuthServiceClient: debug
-    ru.otus.homework.api.client.GameServiceClient: debug
 
 jwt:
   access-token-key: '{"kty":"oct","k":"hi7S5RX5ZRZooHA0RKGctZ-KtR9FoESgCnH-3BNg5XI"}'
   refresh-token-key: '{"kty":"oct","k":"956PBFst1FguLr5irJD-aQ"}'
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://@discovery:8761/eureka}
+  #      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+---
 spring:
-  application:
-    name: game-service
+  config:
+    activate:
+      on-profile: test
   cloud:
     openfeign:
       circuitbreaker:
@@ -29,6 +42,11 @@ spring:
             readTimeout: 30000
             logger-level: full
 
+logging:
+  level:
+    ru.otus.homework.api.client.AuthServiceClient: debug
+    ru.otus.homework.api.client.GameServiceClient: debug
+
 resilience4j:
   timelimiter:
     configs:
@@ -38,8 +56,10 @@ resilience4j:
 
 eureka:
   client:
-    serviceUrl:
-      defaultZone: ${EUREKA_URI:http://@discovery:8761/eureka}
-#      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-  instance:
-    preferIpAddress: true
+    enabled: false
+
+services:
+  auth-service:
+    url: http://localhost:8443
+  game-service:
+    url: http://localhost:8444
