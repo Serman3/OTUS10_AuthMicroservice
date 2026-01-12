@@ -1,4 +1,13 @@
 services:
+
+  discovery:
+    build: ./discovery-service
+    ports:
+      - "8761:8761"
+    networks:
+      - app-network
+    container_name: discovery_service
+
   db:
     image: postgres:15
     environment:
@@ -11,17 +20,9 @@ services:
       - "5432:5432"
     networks:
       - app-network
-    container_name: auth_test_db
-
-  discovery:
-    build: ./discovery-service
-    ports:
-      - "8761:8761"
-    networks:
-      - app-network
     depends_on:
-      - db
-    container_name: discovery_service
+      - discovery
+    container_name: auth_test_db
 
   auth:
     build: ./spring-security-jwt
@@ -32,6 +33,7 @@ services:
     networks:
       - app-network
     depends_on:
+      - db
       - discovery
     container_name: auth_service
 
@@ -43,6 +45,7 @@ services:
       - app-network
     depends_on:
       - auth
+      - discovery
     container_name: game_service
 
 networks:
