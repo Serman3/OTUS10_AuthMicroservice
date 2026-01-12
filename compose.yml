@@ -27,8 +27,6 @@ services:
     build: ./spring-security-jwt
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/auth_db
-    ports:
-      - "8443:8443"
     networks:
       - app-network
     depends_on:
@@ -37,8 +35,6 @@ services:
 
   game:
     build: ./game-service
-    ports:
-      - "8444:8444"
     networks:
       - app-network
     depends_on:
