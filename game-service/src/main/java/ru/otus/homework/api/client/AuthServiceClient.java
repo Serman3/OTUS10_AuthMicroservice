@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import ru.otus.homework.dto.*;
 
-@FeignClient(qualifiers = "AuthClient", name = "AuthClient", url = "${services.auth.url}", configuration = ClientConfig.class, fallbackFactory = AuthFallbackFactory.class)
+@FeignClient(qualifiers = "AuthClient", name = "auth-service", configuration = ClientConfig.class, fallbackFactory = AuthFallbackFactory.class)
 public interface AuthServiceClient {
 
     @PostMapping("/auth/authorize")

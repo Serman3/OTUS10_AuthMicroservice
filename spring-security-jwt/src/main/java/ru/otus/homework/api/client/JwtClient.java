@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import ru.otus.homework.dto.JwtAuthenticationResponse;
 
-@FeignClient(qualifiers = "JwtClient", name = "JwtClient", url = "${base.url}", configuration = JwtClientConfig.class, fallbackFactory = JwtFallbackFactory.class)
+@FeignClient(qualifiers = "JwtClient", name = "auth-service", configuration = JwtClientConfig.class, fallbackFactory = JwtFallbackFactory.class)
 public interface JwtClient {
 
     @PostMapping("/jwt/tokens")

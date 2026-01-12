@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(qualifiers = "GameClient", name = "GameClient", url = "${services.game.url}", configuration = ClientConfig.class, fallbackFactory = AuthFallbackFactory.class)
+@FeignClient(qualifiers = "GameClient", name = "game-service", configuration = ClientConfig.class, fallbackFactory = AuthFallbackFactory.class)
 public interface GameServiceClient {
 
     @PostMapping("/api/game/action")

@@ -1,13 +1,8 @@
 package ru.otus.homework.config;
 
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CsrfFilter;
 import ru.otus.homework.security.JwtAuthenticationConverter;
 import ru.otus.homework.security.token.Token;
 
@@ -21,18 +16,11 @@ public class JwtAuthenticationConfigurer extends AbstractHttpConfigurer<JwtAuthe
 
     @Override
     public void configure(HttpSecurity builder) throws Exception {
-        var jwtAuthenticationFilter = new AuthenticationFilter(builder.getSharedObject(AuthenticationManager.class),
-                new JwtAuthenticationConverter(this.accessTokenStringDeserializer, this.refreshTokenStringDeserializer));
-        jwtAuthenticationFilter
-                .setSuccessHandler((request, response, authentication) -> CsrfFilter.skipRequest(request));
-        jwtAuthenticationFilter
-                .setFailureHandler((request, response, exception) -> response.sendError(HttpServletResponse.SC_FORBIDDEN));
-
-        var jwtAuthorizationFilter = new JwtAuthorizationFilter();
+        var jwtVerifierFilter = new JwtVerifierFilter()
+                .setJwtAuthenticationConverter(new JwtAuthenticationConverter(this.accessTokenStringDeserializer, this.refreshTokenStringDeserializer));
 
         builder
-                .addFilterBefore(jwtAuthenticationFilter, CsrfFilter.class)
-                .addFilterAfter(jwtAuthorizationFilter, ExceptionTranslationFilter.class);
+                .addFilterBefore(jwtVerifierFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     public JwtAuthenticationConfigurer accessTokenStringDeserializer(

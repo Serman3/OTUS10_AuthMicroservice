@@ -1,8 +1,5 @@
 server:
-  port: 8443
-
-base:
-  url: http://localhost:8443
+  port: 0
 
 logging:
   level:
@@ -16,6 +13,8 @@ jwt:
   refresh-token-key: '{"kty":"oct","k":"956PBFst1FguLr5irJD-aQ"}'
 
 spring:
+  application:
+    name: auth-service
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     #  url: jdbc:postgresql://localhost:5432/auth_db
@@ -45,3 +44,10 @@ resilience4j:
       default:
         timeout-duration: 30000ms
         cancel-running-future: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
