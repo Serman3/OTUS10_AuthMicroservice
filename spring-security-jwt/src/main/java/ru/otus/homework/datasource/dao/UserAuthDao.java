@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework.security.token.Token;
-import ru.otus.homework.security.token.TokenUser;
+import ru.otus.homework.token.TokenUser;
 import ru.otus.homework.datasource.dto.UserDto;
 
 import java.util.Date;

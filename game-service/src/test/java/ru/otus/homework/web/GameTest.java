@@ -45,7 +45,7 @@ public class GameTest {
         JwtAuthenticationResponse jwtAuthenticationResponse = authServiceClient.authorize(jwtAuthorizationRequest);
 
         String gameId = authServiceClient.organaizeSpacebattle(
-                jwtAuthenticationResponse.getAccessToken(),
+                "Bearer " + jwtAuthenticationResponse.getAccessToken(),
                 new OrganaizeSpaceBattleRequest(credentials
                         .keySet()
                         .stream()
@@ -60,7 +60,7 @@ public class GameTest {
         });
 
         userToken.forEach((key, value) -> {
-            Response response = gameServiceClient.gameAction(value);
+            Response response = gameServiceClient.gameAction("Bearer " + value);
             assertEquals(200, response.status());
         });
     }

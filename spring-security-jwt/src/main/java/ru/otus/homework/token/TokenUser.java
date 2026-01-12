@@ -1,7 +1,8 @@
-package ru.otus.homework.security.token;
+package ru.otus.homework.token;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import ru.otus.homework.security.token.Token;
 
 import java.util.Collection;
 

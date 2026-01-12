@@ -11,6 +11,10 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import ru.otus.homework.security.access.AccessTokenJwsStringDeserializer;
 import ru.otus.homework.security.refresh.RefreshTokenJweStringDeserializer;
@@ -48,6 +52,16 @@ public class SecurityConfig {
                         authorizeHttpRequests
                                 .anyRequest().hasAnyRole("USER", "MANAGER"))
                 .build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                return User.builder().build();
+            }
+        };
     }
 
 }

@@ -9,7 +9,6 @@ services:
 
 logging:
   level:
-    sql: debug
     org.springframework.security: trace
     ru.otus.homework.api.client.AuthServiceClient: debug
     ru.otus.homework.api.client.GameServiceClient: debug

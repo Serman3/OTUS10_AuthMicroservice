@@ -12,7 +12,7 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.otus.homework.security.JwtAuthenticationConverter;
 import ru.otus.homework.security.token.Token;
-import ru.otus.homework.security.TokenAuthenticationUserDetailsService;
+import ru.otus.homework.token.TokenAuthenticationUserDetailsService;
 import ru.otus.homework.datasource.dao.SpaceBattleDao;
 import ru.otus.homework.datasource.dao.UserAuthDao;
 import ru.otus.homework.filter.JwtLogoutFilter;

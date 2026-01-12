@@ -9,9 +9,9 @@ services:
       - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
     ports:
       - "5432:5432"
-    container_name: auth_test_db
     networks:
       - app-network
+    container_name: auth_test_db
 
   auth:
     build: ./spring-security-jwt
@@ -19,11 +19,21 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/auth_db
     ports:
       - "8443:8443"
-    container_name: auth_service
     networks:
       - app-network
     depends_on:
       - db
+    container_name: auth_service
+
+  game:
+    build: ./game-service
+    ports:
+      - "8444:8444"
+    networks:
+      - app-network
+    depends_on:
+      - auth
+    container_name: game_service
 
 networks:
   app-network:

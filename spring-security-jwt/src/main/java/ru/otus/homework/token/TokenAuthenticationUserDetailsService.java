@@ -1,4 +1,4 @@
-package ru.otus.homework.security;
+package ru.otus.homework.token;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import ru.otus.homework.datasource.dao.UserAuthDao;
 import ru.otus.homework.security.token.Token;
-import ru.otus.homework.security.token.TokenUser;
 
 import java.time.Instant;
 

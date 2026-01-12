@@ -16,6 +16,18 @@ jwt:
   refresh-token-key: '{"kty":"oct","k":"956PBFst1FguLr5irJD-aQ"}'
 
 spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    #  url: jdbc:postgresql://localhost:5432/auth_db
+    username: auth
+    password: auth
+  docker:
+    compose:
+      stop:
+        command: down
+  sql:
+    init:
+      mode: always
   cloud:
     openfeign:
       circuitbreaker:

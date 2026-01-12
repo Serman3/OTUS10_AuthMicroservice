@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.AuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import ru.otus.homework.security.JwtAuthenticationConverter;
 import ru.otus.homework.security.token.Token;
@@ -26,7 +28,11 @@ public class JwtAuthenticationConfigurer extends AbstractHttpConfigurer<JwtAuthe
         jwtAuthenticationFilter
                 .setFailureHandler((request, response, exception) -> response.sendError(HttpServletResponse.SC_FORBIDDEN));
 
-        builder.addFilterBefore(jwtAuthenticationFilter, CsrfFilter.class);
+        var jwtAuthorizationFilter = new JwtAuthorizationFilter();
+
+        builder
+                .addFilterBefore(jwtAuthenticationFilter, CsrfFilter.class)
+                .addFilterAfter(jwtAuthorizationFilter, ExceptionTranslationFilter.class);
     }
 
     public JwtAuthenticationConfigurer accessTokenStringDeserializer(
