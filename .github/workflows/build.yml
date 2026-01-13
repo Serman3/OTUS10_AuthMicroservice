@@ -21,4 +21,5 @@ jobs:
         run: |
           mvn clean install -DskipTests
           docker compose up -d --wait
+          sleep 120
           mvn clean test -pl game-service -am -P test
