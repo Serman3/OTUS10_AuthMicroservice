@@ -75,7 +75,7 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
-                                .requestMatchers("/auth/**", "/jwt/**").permitAll()
+                                .requestMatchers("/auth/**", "/jwt/**", "/actuator/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
                                 .anyRequest().hasAnyRole("USER", "MANAGER"))
                 .build();

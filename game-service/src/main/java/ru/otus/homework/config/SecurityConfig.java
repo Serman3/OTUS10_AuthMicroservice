@@ -52,6 +52,7 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
+                                .requestMatchers("/actuator/**").permitAll()
                                 .anyRequest().hasAnyRole("USER", "MANAGER"))
                 .build();
     }
