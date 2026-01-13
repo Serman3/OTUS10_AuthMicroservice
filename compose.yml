@@ -6,10 +6,10 @@ services:
     build: ./discovery-service
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://discovery:8761/actuator/health" ]
-      interval: 80s
-      timeout: 240s
+      interval: 240s
+      timeout: 720s
       retries: 3
-      start_period: 60s
+      start_period: 120s
     ports:
       - "8761:8761"
     networks:
@@ -36,10 +36,10 @@ services:
     build: ./spring-security-jwt
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://auth:8443/actuator/health" ]
-      interval: 80s
-      timeout: 240s
+      interval: 240s
+      timeout: 720s
       retries: 3
-      start_period: 60s
+      start_period: 120s
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/auth_db
     ports:
@@ -55,10 +55,10 @@ services:
     build: ./game-service
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://game:8444/actuator/health" ]
-      interval: 80s
-      timeout: 240s
+      interval: 240s
+      timeout: 720s
       retries: 3
-      start_period: 60s
+      start_period: 120s
     ports:
       - "8444:8444"
     networks:
