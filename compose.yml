@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+
+  discovery:
+    build: ./discovery-service
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://discovery:8761/actuator/health" ]
+      interval: 120s
+      timeout: 360s
+      retries: 3
+      start_period: 60s
+    ports:
+      - "8761:8761"
+    networks:
+      - app-network
+    container_name: discovery_service
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: auth
+      POSTGRES_PASSWORD: auth
+    volumes:
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    depends_on:
+      - discovery
+    container_name: auth_test_db
+
+  auth:
+    build: ./spring-security-jwt
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://auth:8443/actuator/health" ]
+      interval: 120s
+      timeout: 360s
+      retries: 3
+      start_period: 60s
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/auth_db
+    ports:
+      - "8443:8443"
+    networks:
+      - app-network
+    depends_on:
+      - db
+      - discovery
+    container_name: auth_service
+
+  game:
+    build: ./game-service
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://game:8444/actuator/health" ]
+      interval: 120s
+      timeout: 360s
+      retries: 3
+      start_period: 60s
+    ports:
+      - "8444:8444"
+    networks:
+      - app-network
+    depends_on:
+      - auth
+      - discovery
+    container_name: game_service
+
+networks:
+  app-network:
+    driver: bridge

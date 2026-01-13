@@ -1,0 +1,54 @@
+server:
+  port: 8443
+
+logging:
+  level:
+    sql: debug
+    org.springframework.security: trace
+    org.springframework.jdbc.core: trace
+    ru.otus.homework.api.client.JwtClient: debug
+
+jwt:
+  access-token-key: '{"kty":"oct","k":"hi7S5RX5ZRZooHA0RKGctZ-KtR9FoESgCnH-3BNg5XI"}'
+  refresh-token-key: '{"kty":"oct","k":"956PBFst1FguLr5irJD-aQ"}'
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    #  url: jdbc:postgresql://localhost:5432/auth_db
+    username: auth
+    password: auth
+  docker:
+    compose:
+      stop:
+        command: down
+  sql:
+    init:
+      mode: always
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+      client:
+        config:
+          JwtClient:
+            connect-timeout: 30000
+            readTimeout: 30000
+            logger-level: full
+
+resilience4j:
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 30000ms
+        cancel-running-future: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://@discovery:8761/eureka}
+#      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
