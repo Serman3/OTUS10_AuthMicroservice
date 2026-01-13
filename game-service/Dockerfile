@@ -5,6 +5,7 @@ RUN java -Djarmode=layertools -jar app.jar extract
 
 FROM maven:3.9.11-amazoncorretto-17-debian as extracted
 WORKDIR app
+RUN apt-get update && apt-get install -y curl
 COPY --from=builder app/dependencies/ ./
 COPY --from=builder app/spring-boot-loader/ ./
 COPY --from=builder app/snapshot-dependencies/ ./

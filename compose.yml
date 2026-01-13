@@ -5,10 +5,10 @@ services:
   discovery:
     build: ./discovery-service
     healthcheck:
-      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8761/actuator/health" ]
-      interval: 30s
-      timeout: 120s
-      retries: 4
+      test: [ "CMD", "curl", "-f", "http://discovery:8761/actuator/health" ]
+      interval: 80s
+      timeout: 240s
+      retries: 3
       start_period: 60s
     ports:
       - "8761:8761"
@@ -35,10 +35,10 @@ services:
   auth:
     build: ./spring-security-jwt
     healthcheck:
-      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8443/actuator/health" ]
-      interval: 30s
-      timeout: 120s
-      retries: 4
+      test: [ "CMD", "curl", "-f", "http://auth:8443/actuator/health" ]
+      interval: 80s
+      timeout: 240s
+      retries: 3
       start_period: 60s
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/auth_db
@@ -54,10 +54,10 @@ services:
   game:
     build: ./game-service
     healthcheck:
-      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8444/actuator/health" ]
-      interval: 30s
-      timeout: 120s
-      retries: 4
+      test: [ "CMD", "curl", "-f", "http://game:8444/actuator/health" ]
+      interval: 80s
+      timeout: 240s
+      retries: 3
       start_period: 60s
     ports:
       - "8444:8444"
