@@ -12,6 +12,7 @@ import ru.otus.homework.dto.JwtAuthenticationResponse;
 import ru.otus.homework.dto.JwtAuthorizationRequest;
 import ru.otus.homework.dto.OrganaizeSpaceBattleRequest;
 import ru.otus.homework.dto.RegistrationRequest;
+import ru.otus.homework.web.dto.OrderRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +64,42 @@ public class GameTest {
 
         userToken.forEach((key, value) -> {
             Response response = gameServiceClient.gameAction("Bearer " + value);
+            assertEquals(200, response.status());
+        });
+    }
+
+    @Test
+    public void moverOrderActionTest() {
+        JwtAuthorizationRequest jwtAuthorizationRequest = new JwtAuthorizationRequest();
+        jwtAuthorizationRequest.setUsername(credentials.entrySet().iterator().next().getKey());
+        jwtAuthorizationRequest.setPassword(credentials.entrySet().iterator().next().getValue());
+
+        JwtAuthenticationResponse jwtAuthenticationResponse = authServiceClient.authorize(jwtAuthorizationRequest);
+
+        String gameId = authServiceClient.organaizeSpacebattle(
+                "Bearer " + jwtAuthenticationResponse.getAccessToken(),
+                new OrganaizeSpaceBattleRequest(credentials
+                        .keySet()
+                        .stream()
+                        .toList()
+                ));
+
+        Map<String, String> userToken = new HashMap<>();
+
+        credentials.forEach((key, value) -> {
+            JwtAuthenticationResponse authenticationResponse = authServiceClient.authorize(new JwtAuthorizationRequest(key, value, gameId));
+            userToken.put(key, authenticationResponse.getAccessToken());
+        });
+
+        userToken.forEach((key, value) -> {
+
+            OrderRequest orderRequest = new OrderRequest();
+            orderRequest.setUserId(key);
+            orderRequest.setActionId("StartMove");
+            orderRequest.setId("548");
+            orderRequest.setArgs(Map.of("point", 2));
+
+            Response response = gameServiceClient.orderAction("Bearer " + value, orderRequest);
             assertEquals(200, response.status());
         });
     }

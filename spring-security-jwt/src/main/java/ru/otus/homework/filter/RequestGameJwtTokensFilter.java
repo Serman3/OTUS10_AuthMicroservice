@@ -15,14 +15,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.otus.homework.security.token.Token;
-import ru.otus.homework.datasource.dao.SpaceBattleDao;
+import ru.otus.homework.datasource.dao.GameDao;
 import ru.otus.homework.token.Tokens;
 import ru.otus.homework.token.access.DefaultAccessTokenFactory;
 import ru.otus.homework.token.refresh.DefaultRefreshTokenFactory;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
-import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -42,7 +41,7 @@ public class RequestGameJwtTokensFilter extends OncePerRequestFilter {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private SpaceBattleDao spaceBattleDao;
+    private GameDao spaceBattleDao;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -52,7 +51,7 @@ public class RequestGameJwtTokensFilter extends OncePerRequestFilter {
                 var context = this.securityContextRepository.loadDeferredContext(request).get();
                 if (context != null && !(context.getAuthentication() instanceof PreAuthenticatedAuthenticationToken)) {
                     String gameId = request.getHeader("gameId");
-                    if (gameId != null && !gameId.isBlank() && spaceBattleDao.getUsersByGameId(UUID.fromString(gameId)).contains(context.getAuthentication().getName())) {
+                    if (gameId != null && !gameId.isBlank() && spaceBattleDao.getUsersByGameId(gameId).contains(context.getAuthentication().getName())) {
                         var refreshToken = this.refreshTokenFactory.apply(context.getAuthentication(), request);
                         var accessToken = this.accessTokenFactory.apply(refreshToken);
 
@@ -103,7 +102,7 @@ public class RequestGameJwtTokensFilter extends OncePerRequestFilter {
         this.objectMapper = objectMapper;
     }
 
-    public void setSpaceBattleDao(SpaceBattleDao spaceBattleDao) {
+    public void setSpaceBattleDao(GameDao spaceBattleDao) {
         this.spaceBattleDao = spaceBattleDao;
     }
 

@@ -19,7 +19,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
-import ru.otus.homework.datasource.dao.SpaceBattleDao;
+import ru.otus.homework.datasource.dao.GameDao;
 import ru.otus.homework.datasource.dao.UserAuthDao;
 import ru.otus.homework.security.access.AccessTokenJwsStringDeserializer;
 import ru.otus.homework.token.access.AccessTokenJwsStringSerializer;
@@ -31,11 +31,11 @@ import java.text.ParseException;
 public class SecurityConfig {
 
     private final UserAuthDao userAuthDao;
-    private final SpaceBattleDao spaceBattleDao;
+    private final GameDao spaceBattleDao;
 
     @Autowired
     public SecurityConfig(UserAuthDao userAuthDao,
-                          SpaceBattleDao spaceBattleDao) {
+                          GameDao spaceBattleDao) {
         this.userAuthDao = userAuthDao;
         this.spaceBattleDao = spaceBattleDao;
     }

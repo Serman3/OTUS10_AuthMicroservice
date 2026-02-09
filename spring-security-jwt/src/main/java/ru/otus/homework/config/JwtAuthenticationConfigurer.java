@@ -13,7 +13,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.otus.homework.security.JwtAuthenticationConverter;
 import ru.otus.homework.security.token.Token;
 import ru.otus.homework.token.TokenAuthenticationUserDetailsService;
-import ru.otus.homework.datasource.dao.SpaceBattleDao;
+import ru.otus.homework.datasource.dao.GameDao;
 import ru.otus.homework.datasource.dao.UserAuthDao;
 import ru.otus.homework.filter.JwtLogoutFilter;
 import ru.otus.homework.filter.RefreshTokenFilter;
@@ -34,7 +34,7 @@ public class JwtAuthenticationConfigurer extends AbstractHttpConfigurer<JwtAuthe
 
     private UserAuthDao userAuthDao;
 
-    private SpaceBattleDao spaceBattleDao;
+    private GameDao spaceBattleDao;
 
     @Override
     public void init(HttpSecurity builder) throws Exception {
@@ -109,7 +109,7 @@ public class JwtAuthenticationConfigurer extends AbstractHttpConfigurer<JwtAuthe
         return this;
     }
 
-    public JwtAuthenticationConfigurer spaceBattleDao(SpaceBattleDao spaceBattleDao) {
+    public JwtAuthenticationConfigurer spaceBattleDao(GameDao spaceBattleDao) {
         this.spaceBattleDao = spaceBattleDao;
         return this;
     }

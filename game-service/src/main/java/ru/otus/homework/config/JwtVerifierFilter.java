@@ -32,7 +32,7 @@ public class JwtVerifierFilter extends OncePerRequestFilter {
                 Token token = (Token) authentication.getPrincipal();
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         token.subject(),
-                        null,
+                        token.gameId(),
                         token.authorities().stream().map(SimpleGrantedAuthority::new).toList()
                 );
                 SecurityContextHolder.getContext().setAuthentication(authToken);

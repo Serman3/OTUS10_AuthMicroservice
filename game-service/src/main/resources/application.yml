@@ -3,12 +3,21 @@ spring:
     active: prod
   application:
     name: game-service
+  datasource:
+    #    url: ${SPRING_DATASOURCE_URL}
+    url: jdbc:postgresql://localhost:5432/auth_db
+    username: auth
+    password: auth
+  sql:
+    init:
+      mode: always
 
 server:
   port: 8444
 
 logging:
   level:
+    org.springframework.jdbc.core: trace
     org.springframework.security: trace
 
 jwt:
@@ -18,8 +27,8 @@ jwt:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_URI:http://@discovery:8761/eureka}
-  #      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+#      defaultZone: ${EUREKA_URI:http://@discovery:8761/eureka}
+        defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
   instance:
     preferIpAddress: true
 ---
