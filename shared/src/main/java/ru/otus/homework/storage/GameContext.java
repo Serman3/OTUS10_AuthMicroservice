@@ -16,8 +16,6 @@ public interface GameContext {
 
     void addCommand(String userId, Command command);
 
-    void addGameObject(String id, UObject gameItem);
-
-    UObject getGameObject(String objectId);
+    UObject getGameObject(String userId, String objectId);
 
 }

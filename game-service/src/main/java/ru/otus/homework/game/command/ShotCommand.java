@@ -28,8 +28,8 @@ public class ShotCommand implements Command {
 
     @Override
     public void execute() {
-        Integer shot = (Integer) args.get("shot");
-        gameObject.setProperty("shot", shot);
-        LOGGER.info("Shouting object {} with shot {}", gameObject.getId(), shot);
+        Integer shotToPoint = (Integer) args.get("shotToPoint");
+        gameObject.setProperty("shotToPoint", shotToPoint);
+        LOGGER.info("Shouting object {} with shot {}", gameObject.getId(), shotToPoint);
     }
 }

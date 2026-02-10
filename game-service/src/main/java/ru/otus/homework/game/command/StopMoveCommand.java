@@ -28,6 +28,7 @@ public class StopMoveCommand implements Command {
 
     @Override
     public void execute() {
+        gameObject.setProperty("stopped", true);
         LOGGER.info("Stop Moving object {}", gameObject.getId());
     }
 

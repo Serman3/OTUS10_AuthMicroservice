@@ -42,7 +42,7 @@ public class InterpretCommand implements Command {
     @Override
     public void execute() {
         try {
-            UObject gameObject = gameContext.getGameObject(gameObjectId);
+            UObject gameObject = gameContext.getGameObject(userId, gameObjectId);
             if (gameObject == null) {
                 throw new IllegalArgumentException("Game object not found: " + gameObjectId);
             }

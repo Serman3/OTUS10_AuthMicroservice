@@ -45,6 +45,11 @@ public class Order implements UObject {
         return gameObjectId;
     }
 
+    @Override
+    public Map<String, Object> getProperties() {
+        return this.properties;
+    }
+
     public String getActionId() {
         return actionId;
     }

@@ -15,6 +15,8 @@ import ru.otus.homework.service.GameOrderService;
 import ru.otus.homework.validator.OrderValidator;
 import ru.otus.homework.web.dto.OrderRequest;
 import ru.otus.homework.model.Order;
+import ru.otus.homework.web.dto.OrderResponse;
+
 import java.util.Map;
 
 @RestController
@@ -44,15 +46,15 @@ public class GameController {
 
     @PostMapping("/order")
     @Operation(summary = "Запрос приказа на действие с игровым объектом")
-    public ResponseEntity<String> orderAction(UsernamePasswordAuthenticationToken principal, @RequestBody @Valid OrderRequest orderRequest, BindingResult bindingResult) {
+    public ResponseEntity<OrderResponse> orderAction(UsernamePasswordAuthenticationToken principal, @RequestBody @Valid OrderRequest orderRequest, BindingResult bindingResult) {
         orderValidator.validate(orderRequest, bindingResult);
 
         String gameId = principal.getCredentials().toString();
 
-        String response = gameOrderService.orderAction(gameId, modelMapper.map(orderRequest, Order.class));
+        Map<String, Object> gameObjectProperties = gameOrderService.orderAction(gameId, modelMapper.map(orderRequest, Order.class));
 
-        return ResponseEntity.ok(response);
-    }
+        return ResponseEntity.ok(new OrderResponse(orderRequest.getUserId(), orderRequest.getActionId(), orderRequest.getId(), gameObjectProperties));
+}
 
     @ExceptionHandler
     private ResponseEntity<Map<String, String>> handleException(Throwable exception) {

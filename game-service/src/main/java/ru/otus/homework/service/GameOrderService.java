@@ -2,8 +2,10 @@ package ru.otus.homework.service;
 
 import ru.otus.homework.model.Order;
 
+import java.util.Map;
+
 public interface GameOrderService {
 
-    String orderAction(String gameId, Order order);
+    Map<String, Object> orderAction(String gameId, Order order);
 
 }

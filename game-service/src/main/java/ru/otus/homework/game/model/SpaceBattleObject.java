@@ -38,10 +38,7 @@ public class SpaceBattleObject implements UObject {
     }
 
     @Override
-    public String toString() {
-        return "SpaceBattleObject{" +
-                "id=" + getId() +
-                "properties=" + properties +
-                '}';
+    public Map<String, Object> getProperties() {
+        return this.properties;
     }
 }

@@ -11,6 +11,8 @@ import ru.otus.homework.model.UObject;
 import ru.otus.homework.storage.GameContext;
 import ru.otus.homework.model.Order;
 
+import java.util.Map;
+
 @Service
 public class GameOrderServiceImpl implements GameOrderService {
 
@@ -30,7 +32,7 @@ public class GameOrderServiceImpl implements GameOrderService {
     }
 
     @Override
-    public String orderAction(String gameId, Order order) {
+    public Map<String, Object> orderAction(String gameId, Order order) {
         LOGGER.info("Process order: {}", order.toString());
 
         try {
@@ -49,8 +51,8 @@ public class GameOrderServiceImpl implements GameOrderService {
             interpretCommand.execute();
 
             gameContext.getCommandQueue(order.getUserId()).take().execute();
-            UObject uObject = gameContext.getGameObject(order.getId());
-            return uObject.toString();
+            UObject uObject = gameContext.getGameObject(order.getUserId(), order.getId());
+            return uObject.getProperties();
         } catch (Throwable e) {
             LOGGER.error("Process order error", e);
             throw new RuntimeException(e);
