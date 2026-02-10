@@ -80,7 +80,6 @@ public class GameTest {
             String token = "Bearer " + value;
 
             OrderRequest orderRequest = new OrderRequest();
-            orderRequest.setUserId(key);
             orderRequest.setId("548");
 
             orderRequest.setArgs(Map.of("point", 2));

@@ -9,8 +9,6 @@ public class Order implements UObject {
 
     private String gameObjectId;
 
-    private String userId;
-
     private String actionId;
 
     private Map<String, Object> args;
@@ -20,11 +18,9 @@ public class Order implements UObject {
     }
 
     public Order(String gameObjectId,
-                 String userId,
                  String actionId,
                  Map<String, Object> args) {
         this.gameObjectId = gameObjectId;
-        this.userId = userId;
         this.actionId = actionId;
         this.args = args;
         initProperties();
@@ -62,14 +58,6 @@ public class Order implements UObject {
         this.gameObjectId = gameObjectId;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public Map<String, Object> getArgs() {
         return args;
     }
@@ -80,7 +68,6 @@ public class Order implements UObject {
 
     private void initProperties() {
         setProperty("gameObjectId", this.getId());
-        setProperty("userId", this.getUserId());
         setProperty("actionId", this.getActionId());
         setProperty("args", this.getArgs());
     }
@@ -90,7 +77,6 @@ public class Order implements UObject {
         return "Order{" +
                 "properties=" + properties +
                 ", gameObjectId='" + gameObjectId + '\'' +
-                ", userId='" + userId + '\'' +
                 ", actionId='" + actionId + '\'' +
                 ", args=" + args +
                 '}';

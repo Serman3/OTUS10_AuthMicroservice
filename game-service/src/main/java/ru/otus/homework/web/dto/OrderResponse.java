@@ -26,11 +26,9 @@ public class OrderResponse {
     public OrderResponse() {
     }
 
-    public OrderResponse(String executedCommandUserId,
-                         String completedActionId,
+    public OrderResponse(String completedActionId,
                          String gameObjectId,
                          Map<String, Object> propertiesGameObject) {
-        this.executedCommandUserId = executedCommandUserId;
         this.completedActionId = completedActionId;
         this.gameObjectId = gameObjectId;
         this.propertiesGameObject = propertiesGameObject;

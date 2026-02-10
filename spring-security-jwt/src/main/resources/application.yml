@@ -16,8 +16,8 @@ spring:
   application:
     name: auth-service
   datasource:
-#    url: ${SPRING_DATASOURCE_URL}
-    url: jdbc:postgresql://localhost:5432/auth_db
+    url: ${SPRING_DATASOURCE_URL}
+#    url: jdbc:postgresql://localhost:5432/auth_db
     username: auth
     password: auth
   docker:
@@ -48,7 +48,7 @@ resilience4j:
 eureka:
   client:
     serviceUrl:
-#      defaultZone: ${EUREKA_URI:http://@discovery:8761/eureka}
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+      defaultZone: ${EUREKA_URI:http://@discovery:8761/eureka}
+#      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
   instance:
     preferIpAddress: true

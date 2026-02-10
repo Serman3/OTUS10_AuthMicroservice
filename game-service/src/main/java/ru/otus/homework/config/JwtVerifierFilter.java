@@ -30,12 +30,8 @@ public class JwtVerifierFilter extends OncePerRequestFilter {
             Authentication authentication = jwtAuthenticationConverter.convert(request);
             if (authentication instanceof PreAuthenticatedAuthenticationToken) {
                 Token token = (Token) authentication.getPrincipal();
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        token.subject(),
-                        token.gameId(),
-                        token.authorities().stream().map(SimpleGrantedAuthority::new).toList()
-                );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                PreAuthenticatedAuthenticationToken authenticationToken = new PreAuthenticatedAuthenticationToken(token, authentication.getCredentials(), token.authorities().stream().map(SimpleGrantedAuthority::new).toList());
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
         filterChain.doFilter(request, response);

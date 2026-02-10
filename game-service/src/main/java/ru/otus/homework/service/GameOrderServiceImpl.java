@@ -32,7 +32,7 @@ public class GameOrderServiceImpl implements GameOrderService {
     }
 
     @Override
-    public Map<String, Object> orderAction(String gameId, Order order) {
+    public Map<String, Object> orderAction(String userId, String gameId, Order order) {
         LOGGER.info("Process order: {}", order.toString());
 
         try {
@@ -41,7 +41,7 @@ public class GameOrderServiceImpl implements GameOrderService {
             Command interpretCommand = (Command) beanFactory.getBean(
                     "interpretCommand",
                     order.getId(),
-                    order.getUserId(),
+                    userId,
                     order.getActionId(),
                     order.getArgs(),
                     commandFactory,
@@ -50,8 +50,8 @@ public class GameOrderServiceImpl implements GameOrderService {
 
             interpretCommand.execute();
 
-            gameContext.getCommandQueue(order.getUserId()).take().execute();
-            UObject uObject = gameContext.getGameObject(order.getUserId(), order.getId());
+            gameContext.getCommandQueue(userId).take().execute();
+            UObject uObject = gameContext.getGameObject(userId, order.getId());
             return uObject.getProperties();
         } catch (Throwable e) {
             LOGGER.error("Process order error", e);

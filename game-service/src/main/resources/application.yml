@@ -4,8 +4,8 @@ spring:
   application:
     name: game-service
   datasource:
-    #    url: ${SPRING_DATASOURCE_URL}
-    url: jdbc:postgresql://localhost:5432/auth_db
+    url: ${SPRING_DATASOURCE_URL}
+#    url: jdbc:postgresql://localhost:5432/auth_db
     username: auth
     password: auth
   sql:
@@ -27,8 +27,8 @@ jwt:
 eureka:
   client:
     serviceUrl:
-#      defaultZone: ${EUREKA_URI:http://@discovery:8761/eureka}
-        defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+      defaultZone: ${EUREKA_URI:http://@discovery:8761/eureka}
+#      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
   instance:
     preferIpAddress: true
 ---
@@ -36,6 +36,13 @@ spring:
   config:
     activate:
       on-profile: test
+  datasource:
+    url: jdbc:postgresql://localhost:5432/auth_db
+    username: auth
+    password: auth
+    sql:
+      init:
+        mode: always
   cloud:
     openfeign:
       circuitbreaker:
@@ -53,6 +60,7 @@ spring:
 
 logging:
   level:
+    org.springframework.jdbc.core: trace
     ru.otus.homework.api.client.AuthServiceClient: debug
     ru.otus.homework.api.client.GameServiceClient: debug
 

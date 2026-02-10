@@ -12,10 +12,6 @@ public class OrderRequest {
     @NotBlank(message = "ID объекта не может быть пустым")
     private String gameObjectId;
 
-    @Schema(description = "ID пользователя", example = "89999999999")
-    @NotBlank(message = "ID пользователя не может быть пустым")
-    private String userId;
-
     @Schema(description = "Действие, которое необходимо выполнить", example = "StartMove")
     @NotBlank(message = "Действие не может быть пустым")
     private String actionId;
@@ -26,11 +22,9 @@ public class OrderRequest {
     public OrderRequest() {}
 
     public OrderRequest(String gameObjectId,
-                        String userId,
                         String actionId,
                         Map<String, Object> args) {
         this.gameObjectId = gameObjectId;
-        this.userId = userId;
         this.actionId = actionId;
         this.args = args;
     }
@@ -49,14 +43,6 @@ public class OrderRequest {
 
     public void setId(String gameObjectId) {
         this.gameObjectId = gameObjectId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public Map<String, Object> getArgs() {

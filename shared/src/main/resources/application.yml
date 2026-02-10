@@ -5,8 +5,8 @@ logging:
 
 spring:
   datasource:
-    #    url: ${SPRING_DATASOURCE_URL}
-    url: jdbc:postgresql://localhost:5432/auth_db
+    url: ${SPRING_DATASOURCE_URL}
+#    url: jdbc:postgresql://localhost:5432/auth_db
     username: auth
     password: auth
 

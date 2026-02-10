@@ -9,8 +9,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.otus.homework.security.token.Token;
 import ru.otus.homework.service.GameOrderService;
 import ru.otus.homework.validator.OrderValidator;
 import ru.otus.homework.web.dto.OrderRequest;
@@ -46,14 +48,14 @@ public class GameController {
 
     @PostMapping("/order")
     @Operation(summary = "Запрос приказа на действие с игровым объектом")
-    public ResponseEntity<OrderResponse> orderAction(UsernamePasswordAuthenticationToken principal, @RequestBody @Valid OrderRequest orderRequest, BindingResult bindingResult) {
-        orderValidator.validate(orderRequest, bindingResult);
+    public ResponseEntity<OrderResponse> orderAction(PreAuthenticatedAuthenticationToken auth, @RequestBody @Valid OrderRequest orderRequest, BindingResult bindingResult) {
+        Token token = (Token) auth.getPrincipal();
 
-        String gameId = principal.getCredentials().toString();
+        orderValidator.validate(token, orderRequest, bindingResult);
 
-        Map<String, Object> gameObjectProperties = gameOrderService.orderAction(gameId, modelMapper.map(orderRequest, Order.class));
+        Map<String, Object> gameObjectProperties = gameOrderService.orderAction(token.subject(), token.gameId(), modelMapper.map(orderRequest, Order.class));
 
-        return ResponseEntity.ok(new OrderResponse(orderRequest.getUserId(), orderRequest.getActionId(), orderRequest.getId(), gameObjectProperties));
+        return ResponseEntity.ok(new OrderResponse(orderRequest.getActionId(), orderRequest.getId(), gameObjectProperties));
 }
 
     @ExceptionHandler

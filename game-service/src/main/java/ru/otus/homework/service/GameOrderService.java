@@ -6,6 +6,6 @@ import java.util.Map;
 
 public interface GameOrderService {
 
-    Map<String, Object> orderAction(String gameId, Order order);
+    Map<String, Object> orderAction(String userId, String gameId, Order order);
 
 }
