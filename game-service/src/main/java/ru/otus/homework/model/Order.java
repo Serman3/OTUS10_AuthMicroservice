@@ -1,0 +1,84 @@
+package ru.otus.homework.model;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Order implements UObject {
+
+    private final Map<String, Object> properties = new HashMap<>();
+
+    private String gameObjectId;
+
+    private String actionId;
+
+    private Map<String, Object> args;
+
+    public Order() {
+        initProperties();
+    }
+
+    public Order(String gameObjectId,
+                 String actionId,
+                 Map<String, Object> args) {
+        this.gameObjectId = gameObjectId;
+        this.actionId = actionId;
+        this.args = args;
+        initProperties();
+    }
+
+    @Override
+    public void setProperty(String propertyName, Object value) {
+        properties.put(propertyName, value);
+    }
+
+    @Override
+    public Object getProperty(String name) {
+        return properties.get(name);
+    }
+
+    @Override
+    public String getId() {
+        return gameObjectId;
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return this.properties;
+    }
+
+    public String getActionId() {
+        return actionId;
+    }
+
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
+
+    public void setId(String gameObjectId) {
+        this.gameObjectId = gameObjectId;
+    }
+
+    public Map<String, Object> getArgs() {
+        return args;
+    }
+
+    public void setArgs(Map<String, Object> args) {
+        this.args = args;
+    }
+
+    private void initProperties() {
+        setProperty("gameObjectId", this.getId());
+        setProperty("actionId", this.getActionId());
+        setProperty("args", this.getArgs());
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "properties=" + properties +
+                ", gameObjectId='" + gameObjectId + '\'' +
+                ", actionId='" + actionId + '\'' +
+                ", args=" + args +
+                '}';
+    }
+}
